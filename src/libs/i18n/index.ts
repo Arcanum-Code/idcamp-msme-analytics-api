@@ -26,6 +26,11 @@ import {
   es as dashboardEs,
   id as dashboardId,
 } from "@/modules/dashboard/locales";
+import {
+  en as uploadEn,
+  es as uploadEs,
+  id as uploadId,
+} from "@/modules/uploads/locales";
 
 const en = {
   common: commonEn,
@@ -35,6 +40,7 @@ const en = {
   rbac: rbacEn,
   health: healthEn,
   dashboard: dashboardEn,
+  upload: uploadEn,
 };
 
 const es = {
@@ -45,6 +51,7 @@ const es = {
   rbac: rbacEs,
   health: healthEs,
   dashboard: dashboardEs,
+  upload: uploadEs,
 };
 
 const id = {
@@ -55,6 +62,7 @@ const id = {
   rbac: rbacId,
   health: healthId,
   dashboard: dashboardId,
+  upload: uploadId,
 };
 
 const locales: Record<string, typeof en> = {
