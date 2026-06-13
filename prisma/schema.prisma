@@ -27,6 +27,7 @@ model User {
   roleId        String
   role          Role           @relation(fields: [roleId], references: [id], onDelete: Restrict)
   refreshTokens RefreshToken[]
+  shops         Shop[]
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 }
@@ -78,4 +79,76 @@ model RoleFeature {
   canPrint  Boolean @default(false)
 
   @@unique([roleId, featureId])
+}
+
+enum UploadStatus {
+  UPLOADED
+  DETECTING_COLUMNS
+  NEEDS_MAPPING
+  READY
+  FAILED
+}
+
+enum ReportStatus {
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum PeriodType {
+  DAILY
+  WEEKLY
+  MONTHLY
+}
+
+model Shop {
+  id          String           @id @default(cuid())
+  name        String           @db.VarChar(255)
+  description String?          @db.Text
+  ownerId     String
+  owner       User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  uploads     RawUpload[]
+  reports     ReportSnapshot[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@index([ownerId])
+}
+
+model RawUpload {
+  id           String       @id @default(cuid())
+  shopId       String
+  shop         Shop         @relation(fields: [shopId], references: [id])
+  filename     String
+  filePath     String
+  status       UploadStatus @default(UPLOADED)
+  columnMap    Json?        // Record<string, string | null>
+  unmappedRequired String[] @default([])
+  rowCount     Int?
+  error        Json?        // { code, message }
+  uploadedAt   DateTime     @default(now())
+  processedAt  DateTime?
+  reports      ReportSnapshot[]
+
+  @@index([shopId])
+}
+
+model ReportSnapshot {
+  id           String       @id @default(cuid())
+  shopId       String
+  shop         Shop         @relation(fields: [shopId], references: [id])
+  uploadId     String
+  upload       RawUpload    @relation(fields: [uploadId], references: [id])
+  periodType   PeriodType
+  periodStart  DateTime     @db.Date
+  periodEnd    DateTime     @db.Date
+  status       ReportStatus @default(PROCESSING)
+  revenueData  Json?        // result object from FastAPI
+  narrative    String?
+  error        Json?
+  computedAt   DateTime?
+  createdAt    DateTime     @default(now())
+
+  @@unique([uploadId, periodType, periodStart, periodEnd])
+  @@index([shopId])
 }
