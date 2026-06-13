@@ -5,47 +5,9 @@ import {
   resetDatabase,
   createAuthenticatedUser,
   randomIp,
+  createTestUpload,
 } from "../test_utils";
 import jwt from "jsonwebtoken";
-
-// ── Test helper: create a shop owned by userId, plus a RawUpload ───────
-async function createTestUpload(
-  ownerId: string,
-  overrides: {
-    status?:
-      | "UPLOADED"
-      | "DETECTING_COLUMNS"
-      | "NEEDS_MAPPING"
-      | "READY"
-      | "FAILED";
-    columnMap?: Record<string, string | null>;
-  } = {},
-) {
-  const shop = await prisma.shop.create({
-    data: { name: "Test Shop", ownerId },
-  });
-
-  const upload = await prisma.rawUpload.create({
-    data: {
-      shopId: shop.id,
-      filename: "sales.csv",
-      filePath: "/uploads/sales.csv",
-      status: overrides.status ?? "NEEDS_MAPPING",
-      columnMap: overrides.columnMap ?? {
-        date: "transaction_date",
-        product: null,
-        category: "product_category",
-        quantity: "transaction_qty",
-        unitPrice: "unit_price",
-        totalPrice: null,
-        paymentMethod: null,
-      },
-      unmappedRequired: ["product"],
-    },
-  });
-
-  return { shop, upload };
-}
 
 // ── Convenience wrapper for the endpoint ───────────────────────────────
 const PATCH = (
