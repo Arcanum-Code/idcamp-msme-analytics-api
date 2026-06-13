@@ -5,6 +5,9 @@ export const TEST_USER_ID = "ckv9x3y9x0001qz1abcde1234";
 
 // Cleans the DB (Add other tables here)
 export async function resetDatabase() {
+  await prisma.reportSnapshot.deleteMany();
+  await prisma.rawUpload.deleteMany();
+  await prisma.shop.deleteMany();
   await prisma.refreshToken.deleteMany();
   await prisma.user.deleteMany();
   await prisma.roleFeature.deleteMany();
