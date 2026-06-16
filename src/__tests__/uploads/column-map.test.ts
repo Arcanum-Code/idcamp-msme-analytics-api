@@ -103,6 +103,20 @@ describe("PATCH /api/uploads/:uploadId/column-map", () => {
     expect(res.status).toBe(403);
   });
 
+  it("should return 403 if user role has uploads_management:read but not update", async () => {
+    const readOnlyRole = await createTestRoleWithPermissions(
+      "ReadOnlyUploader",
+      [{ featureName: "uploads_management", action: "read" }],
+    );
+    const { authHeaders } = await createAuthenticatedUser({
+      roleId: readOnlyRole.id,
+    });
+    const res = await PATCH("any-id", authHeaders, {
+      resolvedMappings: { product: "Menu" },
+    });
+    expect(res.status).toBe(403);
+  });
+
   // ── Ownership & Status Guard Tests ─────────────────────────────────
 
   it("should return 404 if uploadId does not exist", async () => {
