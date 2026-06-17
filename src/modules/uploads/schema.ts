@@ -1,13 +1,11 @@
 import { t, type Static } from "elysia";
 import { createTbResponseSchema, createTbErrorSchema } from "@/libs/response";
 
-// ── Request ──────────────────────────────────────────────────────────
+// ── Existing: Column Map (PATCH) ─────────────────────────────────────
 export const ColumnMapParamSchema = t.Object({
   uploadId: t.String(),
 });
 
-// The client submits only the fields they are resolving.
-// At least one must be provided (minProperties: 1).
 export const SaveColumnMapBodySchema = t.Object({
   resolvedMappings: t.Object(
     {
@@ -25,7 +23,6 @@ export const SaveColumnMapBodySchema = t.Object({
 
 export type SaveColumnMapInput = Static<typeof SaveColumnMapBodySchema>;
 
-// ── Response ─────────────────────────────────────────────────────────
 const ColumnMapResultSchema = t.Record(
   t.String(),
   t.Union([t.String(), t.Null()]),
@@ -38,3 +35,21 @@ export const SaveColumnMapResponseSchema = createTbResponseSchema(
 );
 
 export const UploadErrorSchema = createTbErrorSchema(t.Null());
+
+// ── New: File Upload (POST) ──────────────────────────────────────────
+export const UploadFileBodySchema = t.Object({
+  file: t.File(),
+});
+
+export type UploadFileInput = Static<typeof UploadFileBodySchema>;
+
+const UploadFileDataSchema = t.Object({
+  uploadId: t.String(),
+  filename: t.String(),
+  status: t.String(),
+  unmappedRequired: t.Optional(t.Array(t.String())),
+  detectedColumns: t.Optional(t.Array(t.String())),
+});
+
+export const UploadFileResponseSchema =
+  createTbResponseSchema(UploadFileDataSchema);
