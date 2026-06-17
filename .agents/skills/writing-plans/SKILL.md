@@ -67,33 +67,42 @@ This structure informs the task decomposition. Each task should produce self-con
 ### Task N: [Component Name]
 
 **Files:**
-- Create: `exact/path/to/file.py`
-- Modify: `exact/path/to/existing.py:123-145`
-- Test: `tests/exact/path/to/test.py`
+- Create: `src/modules/feature/feature.service.ts`
+- Modify: `src/index.ts:12-15`
+- Test: `src/__tests__/integration/feature.test.ts`
 
 - [ ] **Step 1: Write the failing test**
 
-```python
-def test_specific_behavior():
-    result = function(input)
-    assert result == expected
+```typescript
+import { describe, expect, it } from 'bun:test';
+import { featureService } from '../../modules/feature/feature.service';
+
+describe('FeatureService', () => {
+  it('should return specific expected value', () => {
+    const result = featureService.doSomething('input');
+    expect(result).toBe('expected');
+  });
+});
 ```
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `pytest tests/path/test.py::test_name -v`
-Expected: FAIL with "function not defined"
+Run: `bun test src/__tests__/integration/feature.test.ts`
+Expected: FAIL with "Cannot find module" or similar
 
 - [ ] **Step 3: Write minimal implementation**
 
-```python
-def function(input):
-    return expected
+```typescript
+export const featureService = {
+  doSomething: (input: string): string => {
+    return 'expected';
+  }
+};
 ```
 
 - [ ] **Step 4: Run test to verify it passes**
 
-Run: `pytest tests/path/test.py::test_name -v`
+Run: `bun test src/__tests__/integration/feature.test.ts`
 Expected: PASS
 
 - [ ] **Step 5: Commit all task changes**
@@ -101,7 +110,7 @@ Expected: PASS
 > This is the **only** commit step per task. All files created/modified in this task are committed together.
 
 ```bash
-git add tests/path/test.py src/path/file.py
+git add src/__tests__/integration/feature.test.ts src/modules/feature/feature.service.ts
 git commit -m "feat: add specific feature"
 ```
 ````
