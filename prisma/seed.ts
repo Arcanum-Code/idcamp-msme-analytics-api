@@ -8,6 +8,7 @@ const FEATURES = [
   { name: "user_management", description: "Manage system users" },
   { name: "RBAC_management", description: "Manage roles and permissions" },
   { name: "uploads_management", description: "Manage file uploads" },
+  { name: "reports_management", description: "Manage reports and analytics" },
 ] as const;
 
 const ROLES = [
@@ -35,11 +36,13 @@ const ROLE_PERMISSIONS: Record<
     user_management: { c: true, r: true, u: true, d: true, p: true },
     RBAC_management: { c: true, r: true, u: true, d: true, p: true },
     uploads_management: { c: true, r: true, u: true, d: true, p: true },
+    reports_management: { c: true, r: true, u: true, d: true, p: true },
   },
   Staff: {
     user_management: { c: false, r: false, u: false, d: false, p: false },
     RBAC_management: { c: false, r: false, u: false, d: false, p: false },
     uploads_management: { c: true, r: true, u: true, d: false, p: false },
+    reports_management: { c: true, r: true, u: false, d: false, p: true },
   },
 };
 
