@@ -8,15 +8,20 @@ import {
 import { errorResponse } from "@/libs/response";
 import { createBaseApp, createProtectedApp } from "@/libs/base";
 import { UploadNotFoundError, UploadNotAwaitingMappingError } from "./error";
+import { hasPermission } from "@/middleware/permission";
+
+const FEATURE_NAME = "uploads_management";
 
 const protectedUploads = createProtectedApp().patch(
   "/:uploadId/column-map",
   UploadController.saveColumnMap,
   {
+    beforeHandle: hasPermission(FEATURE_NAME, "update"),
     params: ColumnMapParamSchema,
     body: SaveColumnMapBodySchema,
     response: {
       200: SaveColumnMapResponseSchema,
+      403: UploadErrorSchema,
       404: UploadErrorSchema,
       409: UploadErrorSchema,
     },

@@ -7,7 +7,7 @@ description: Use when you have a spec or requirements for a multi-step task, bef
 
 ## Overview
 
-Write comprehensive implementation plans assuming the engineer has zero context for our codebase and questionable taste. Document everything they need to know: which files to touch for each task, code, testing, docs they might need to check, how to test it. Give them the whole plan as bite-sized tasks. DRY. YAGNI. TDD. Frequent commits.
+Write comprehensive implementation plans assuming the engineer has zero context for our codebase and questionable taste. Document everything they need to know: which files to touch for each task, code, testing, docs they might need to check, how to test it. Give them the whole plan as bite-sized tasks. DRY. YAGNI. TDD. Commit per task.
 
 Assume they are a skilled developer, but know almost nothing about our toolset or problem domain. Assume they don't know good test design very well.
 
@@ -40,7 +40,8 @@ This structure informs the task decomposition. Each task should produce self-con
 - "Run it to make sure it fails" - step
 - "Implement the minimal code to make the test pass" - step
 - "Run the tests and make sure they pass" - step
-- "Commit" - step
+
+**Commits happen once per task**, not per step. The final step of every task is a single commit that groups all changes from that task.
 
 ## Plan Document Header
 
@@ -95,7 +96,9 @@ def function(input):
 Run: `pytest tests/path/test.py::test_name -v`
 Expected: PASS
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 5: Commit all task changes**
+
+> This is the **only** commit step per task. All files created/modified in this task are committed together.
 
 ```bash
 git add tests/path/test.py src/path/file.py
@@ -117,7 +120,7 @@ Every step must contain the actual content an engineer needs. These are **plan f
 - Exact file paths always
 - Complete code in every step — if a step changes code, show the code
 - Exact commands with expected output
-- DRY, YAGNI, TDD, frequent commits
+- DRY, YAGNI, TDD, commit per task (not per step)
 
 ## Self-Review
 

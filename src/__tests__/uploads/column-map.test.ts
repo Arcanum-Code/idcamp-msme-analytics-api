@@ -6,6 +6,7 @@ import {
   createAuthenticatedUser,
   randomIp,
   createTestUpload,
+  createTestRoleWithPermissions,
 } from "../test_utils";
 import jwt from "jsonwebtoken";
 
@@ -32,6 +33,9 @@ const PATCH = (
 describe("PATCH /api/uploads/:uploadId/column-map", () => {
   beforeEach(async () => {
     await resetDatabase();
+    await createTestRoleWithPermissions("TestUser", [
+      { featureName: "uploads_management", action: "update" },
+    ]);
   });
 
   afterAll(async () => {
@@ -78,6 +82,34 @@ describe("PATCH /api/uploads/:uploadId/column-map", () => {
     await prisma.user.update({
       where: { id: user.id },
       data: { isActive: false },
+    });
+    const res = await PATCH("any-id", authHeaders, {
+      resolvedMappings: { product: "Menu" },
+    });
+    expect(res.status).toBe(403);
+  });
+
+  it("should return 403 if user lacks uploads_management update permission", async () => {
+    const noPermissionRole = await createTestRoleWithPermissions(
+      "NoPermissionsRole",
+      [],
+    );
+    const { authHeaders } = await createAuthenticatedUser({
+      roleId: noPermissionRole.id,
+    });
+    const res = await PATCH("any-id", authHeaders, {
+      resolvedMappings: { product: "Menu" },
+    });
+    expect(res.status).toBe(403);
+  });
+
+  it("should return 403 if user role has uploads_management:read but not update", async () => {
+    const readOnlyRole = await createTestRoleWithPermissions(
+      "ReadOnlyUploader",
+      [{ featureName: "uploads_management", action: "read" }],
+    );
+    const { authHeaders } = await createAuthenticatedUser({
+      roleId: readOnlyRole.id,
     });
     const res = await PATCH("any-id", authHeaders, {
       resolvedMappings: { product: "Menu" },
