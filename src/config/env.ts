@@ -17,6 +17,9 @@ const envSchema = z.object({
   JWT_REFRESH_EXPIRES_IN: z.string(),
 
   DATABASE_URL: z.url(),
+
+  UPLOAD_DIR: z.string().default("./uploads"),
+  MAX_FILE_SIZE_MB: z.coerce.number().default(10),
 });
 
 /**
