@@ -6,6 +6,8 @@ import {
   UploadErrorSchema,
   UploadFileBodySchema,
   UploadFileResponseSchema,
+  UploadStatusParamSchema,
+  UploadStatusResponseSchema,
 } from "./schema";
 import { errorResponse } from "@/libs/response";
 import { createBaseApp, createProtectedApp } from "@/libs/base";
@@ -40,6 +42,14 @@ const protectedUploads = createProtectedApp()
       403: UploadErrorSchema,
       404: UploadErrorSchema,
       409: UploadErrorSchema,
+    },
+  })
+  .get("/:uploadId/status", UploadController.getUploadStatus, {
+    beforeHandle: hasPermission(FEATURE_NAME, "read"),
+    params: UploadStatusParamSchema,
+    response: {
+      200: UploadStatusResponseSchema,
+      404: UploadErrorSchema,
     },
   });
 

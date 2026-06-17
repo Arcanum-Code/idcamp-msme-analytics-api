@@ -73,4 +73,34 @@ export class UploadController {
       locale,
     );
   }
+
+  static async getUploadStatus({
+    params,
+    user,
+    set,
+    log,
+    locale,
+  }: {
+    params: { uploadId: string };
+    user: { id: string; tokenVersion: number };
+    set: Context["set"];
+    log: Logger;
+    locale: string;
+  }) {
+    const result = await UploadService.getUploadStatus(
+      params.uploadId,
+      user.id,
+      log,
+      locale,
+    );
+
+    return successResponse(
+      set,
+      result,
+      { key: "upload.statusRetrieved" },
+      200,
+      undefined,
+      locale,
+    );
+  }
 }
