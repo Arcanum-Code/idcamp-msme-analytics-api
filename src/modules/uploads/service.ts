@@ -283,7 +283,9 @@ export abstract class UploadService {
       rowCount: upload.rowCount,
       uploadedAt: upload.uploadedAt,
       processedAt: upload.processedAt,
-      error: upload.error as { code: string; message: string } | null,
+      ...(upload.error
+        ? { error: upload.error as { code: string; message: string } }
+        : {}),
     };
   }
 }

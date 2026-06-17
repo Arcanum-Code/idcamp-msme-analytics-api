@@ -66,13 +66,10 @@ export const UploadStatusDataSchema = t.Object({
   uploadedAt: t.Union([t.Date(), t.String()]),
   processedAt: t.Optional(t.Union([t.Date(), t.String(), t.Null()])),
   error: t.Optional(
-    t.Union([
-      t.Object({
-        code: t.String(),
-        message: t.String(),
-      }),
-      t.Null(),
-    ]),
+    t.Object({
+      code: t.String(),
+      message: t.String(),
+    }),
   ),
 });
 

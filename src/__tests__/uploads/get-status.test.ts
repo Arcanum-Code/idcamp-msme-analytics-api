@@ -82,13 +82,17 @@ describe("GET /api/uploads/:uploadId/status", () => {
         filename: string;
         rowCount: number;
         uploadedAt: string;
+        error?: unknown;
       };
     };
+
+    console.log(body);
     expect(body.error).toBe(false);
     expect(body.data.uploadId).toBe(upload.id);
     expect(body.data.status).toBe("READY");
     expect(body.data.filename).toBe("test.csv");
     expect(body.data.rowCount).toBe(10);
     expect(body.data.uploadedAt).toBeDefined();
+    expect(body.data.error).toBeUndefined();
   });
 });
