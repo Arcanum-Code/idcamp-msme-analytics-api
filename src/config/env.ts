@@ -20,6 +20,7 @@ const envSchema = z.object({
 
   UPLOAD_DIR: z.string().default("./uploads"),
   MAX_FILE_SIZE_MB: z.coerce.number().default(10),
+  MINI_MODEL_URL: z.string().url().default("http://localhost:5000"),
 });
 
 /**
