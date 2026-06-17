@@ -10,6 +10,7 @@ export const en = {
   fileParseFailed:
     "File could not be read. It may be corrupted or in the wrong format.",
   noShop: "You must create a shop before uploading files.",
+  statusRetrieved: "Upload status retrieved.",
 } as const;
 
 export type UploadLocale = typeof en;

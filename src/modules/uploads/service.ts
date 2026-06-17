@@ -237,4 +237,55 @@ export abstract class UploadService {
 
     return updated.columnMap as Record<string, string | null>;
   }
+
+  static async getUploadStatus(
+    uploadId: string,
+    userId: string,
+    log: Logger,
+    locale: string = "en",
+  ) {
+    log.debug({ uploadId, userId }, "Fetching upload status");
+
+    // Resolve shop
+    const shop = await prisma.shop.findFirst({
+      where: { ownerId: userId },
+      select: { id: true },
+    });
+
+    const upload = await prisma.rawUpload.findFirst({
+      where: {
+        id: uploadId,
+        shopId: shop?.id ?? "__no_shop__",
+      },
+      select: {
+        id: true,
+        filename: true,
+        status: true,
+        rowCount: true,
+        uploadedAt: true,
+        processedAt: true,
+        error: true,
+      },
+    });
+
+    if (!upload) {
+      log.warn(
+        { uploadId, userId },
+        "Upload not found or does not belong to user",
+      );
+      throw new UploadNotFoundError(locale);
+    }
+
+    return {
+      uploadId: upload.id,
+      filename: upload.filename,
+      status: upload.status,
+      rowCount: upload.rowCount,
+      uploadedAt: upload.uploadedAt,
+      processedAt: upload.processedAt,
+      ...(upload.error
+        ? { error: upload.error as { code: string; message: string } }
+        : {}),
+    };
+  }
 }
