@@ -11,4 +11,5 @@ export const id = {
   fileParseFailed:
     "File tidak dapat dibaca. File mungkin rusak atau dalam format yang salah.",
   noShop: "Anda harus membuat toko terlebih dahulu sebelum mengunggah file.",
+  statusRetrieved: "Status unggahan berhasil diambil.",
 } as const;

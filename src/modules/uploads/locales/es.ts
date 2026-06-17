@@ -12,4 +12,5 @@ export const es = {
   fileParseFailed:
     "No se pudo leer el archivo. Puede estar corrupto o en un formato incorrecto.",
   noShop: "Debe crear una tienda antes de subir archivos.",
+  statusRetrieved: "Estado de subida recuperado.",
 } as const;

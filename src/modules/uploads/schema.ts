@@ -53,3 +53,29 @@ const UploadFileDataSchema = t.Object({
 
 export const UploadFileResponseSchema =
   createTbResponseSchema(UploadFileDataSchema);
+
+export const UploadStatusParamSchema = t.Object({
+  uploadId: t.String(),
+});
+
+export const UploadStatusDataSchema = t.Object({
+  uploadId: t.String(),
+  filename: t.String(),
+  status: t.String(),
+  rowCount: t.Optional(t.Union([t.Number(), t.Null()])),
+  uploadedAt: t.Union([t.Date(), t.String()]),
+  processedAt: t.Optional(t.Union([t.Date(), t.String(), t.Null()])),
+  error: t.Optional(
+    t.Union([
+      t.Object({
+        code: t.String(),
+        message: t.String(),
+      }),
+      t.Null(),
+    ]),
+  ),
+});
+
+export const UploadStatusResponseSchema = createTbResponseSchema(
+  UploadStatusDataSchema,
+);
