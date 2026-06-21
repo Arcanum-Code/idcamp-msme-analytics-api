@@ -30,3 +30,7 @@ export const ReportsErrorSchema = t.Object({
     message: t.String(),
   }),
 });
+
+export const GetReportParamsSchema = t.Object({
+  reportId: t.String(),
+});

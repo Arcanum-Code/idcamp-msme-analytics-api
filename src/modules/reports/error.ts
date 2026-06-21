@@ -20,3 +20,10 @@ export class ComputationFailedError extends Error {
     super(t(locale, "reports.computationFailed"));
   }
 }
+
+export class ReportNotFoundError extends Error {
+  readonly key = "reports.reportNotFound";
+  constructor(locale: string = "en") {
+    super(t(locale, "reports.reportNotFound"));
+  }
+}

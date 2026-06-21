@@ -4,4 +4,4 @@ export const en = {
   computationFailed: "Revenue computation failed.",
 } as const;
 
-export type ReportsLocale = typeof en;
+export type ReportsLocale = Record<keyof typeof en, string>;

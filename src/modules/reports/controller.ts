@@ -36,4 +36,34 @@ export class ReportsController {
       locale,
     );
   }
+
+  static async getReport({
+    params,
+    user,
+    set,
+    log,
+    locale,
+  }: {
+    params: { reportId: string };
+    user: { id: string };
+    set: Context["set"];
+    log: Logger;
+    locale: string;
+  }) {
+    const result = await ReportsService.getReport(
+      user.id,
+      params.reportId,
+      log,
+      locale,
+    );
+
+    return successResponse(
+      set,
+      result,
+      "Report retrieved successfully.",
+      200,
+      undefined,
+      locale,
+    );
+  }
 }
