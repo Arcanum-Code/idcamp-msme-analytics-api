@@ -2,7 +2,15 @@ import { Elysia } from "elysia";
 import { cors } from "@elysiajs/cors";
 
 import { openapiPlugin } from "./plugins/openapi";
-import { user, health, auth, rbac, dashboard, uploads } from "./modules";
+import {
+  user,
+  health,
+  auth,
+  rbac,
+  dashboard,
+  uploads,
+  reports,
+} from "./modules";
 import { prisma } from "./libs/prisma";
 import { logger } from "./libs/logger";
 import { globalRateLimit } from "./plugins/rate-limit";
@@ -59,6 +67,7 @@ export const app = new Elysia()
   .use(user)
   .use(dashboard)
   .use(uploads)
+  .use(reports)
   .use(globalErrorHandler)
   .listen(port);
 

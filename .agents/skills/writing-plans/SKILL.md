@@ -7,7 +7,7 @@ description: Use when you have a spec or requirements for a multi-step task, bef
 
 ## Overview
 
-Write comprehensive implementation plans assuming the engineer has zero context for our codebase and questionable taste. Document everything they need to know: which files to touch for each task, code, testing, docs they might need to check, how to test it. Give them the whole plan as bite-sized tasks. DRY. YAGNI. TDD. Commit per task.
+Write comprehensive implementation plans assuming the engineer has zero context for our codebase and questionable taste. Document everything they need to know: which files to touch for each task, code, testing, docs they might need to check, how to test it. Give them the whole plan as bite-sized tasks. DRY. YAGNI. TDD. Commit once per plan.
 
 Assume they are a skilled developer, but know almost nothing about our toolset or problem domain. Assume they don't know good test design very well.
 
@@ -41,7 +41,7 @@ This structure informs the task decomposition. Each task should produce self-con
 - "Implement the minimal code to make the test pass" - step
 - "Run the tests and make sure they pass" - step
 
-**Commits happen once per task**, not per step. The final step of every task is a single commit that groups all changes from that task.
+**Commits happen once per plan**, not per task. The final task of the plan should contain a single commit step that groups all changes made during the entire plan execution.
 
 ## Plan Document Header
 
@@ -105,13 +105,15 @@ export const featureService = {
 Run: `bun test src/__tests__/integration/feature.test.ts`
 Expected: PASS
 
-- [ ] **Step 5: Commit all task changes**
+### Task Final: Commit all plan changes
 
-> This is the **only** commit step per task. All files created/modified in this task are committed together.
+- [ ] **Step 1: Commit everything**
+
+> This is the **only** commit step in the entire plan. All files created/modified are committed together.
 
 ```bash
-git add src/__tests__/integration/feature.test.ts src/modules/feature/feature.service.ts
-git commit -m "feat: add specific feature"
+git add .
+git commit -m "feat: complete implementation of specific feature"
 ```
 ````
 
@@ -129,7 +131,7 @@ Every step must contain the actual content an engineer needs. These are **plan f
 - Exact file paths always
 - Complete code in every step — if a step changes code, show the code
 - Exact commands with expected output
-- DRY, YAGNI, TDD, commit per task (not per step)
+- DRY, YAGNI, TDD, commit once at the end of the plan
 
 ## Self-Review
 

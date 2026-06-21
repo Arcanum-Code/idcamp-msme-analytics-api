@@ -307,6 +307,8 @@ Triggers revenue summary computation for a specific upload and period. Elysia re
 
 Fetches a completed revenue report. Returns the structured JSON from the mini model plus the LLM-generated Bahasa Indonesia narrative.
 
+**Polling:** If a report is still processing, the frontend should poll this endpoint every 3–5 seconds until the `status` becomes `COMPLETED` or `FAILED`.
+
 **Response `200 OK`**
 
 ```json
