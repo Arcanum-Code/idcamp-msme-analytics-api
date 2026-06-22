@@ -1,4 +1,4 @@
-import { t } from "elysia";
+import { Static, t } from "elysia";
 import { PeriodType } from "@generated/prisma";
 
 export const GenerateRevenueReportBodySchema = t.Object({
@@ -34,3 +34,17 @@ export const ReportsErrorSchema = t.Object({
 export const GetReportParamsSchema = t.Object({
   reportId: t.String(),
 });
+
+export const TryRevenueSummarySchema = t.Object({
+  file: t.File(),
+  periodType: t.Union([
+    t.Literal("DAILY"),
+    t.Literal("WEEKLY"),
+    t.Literal("MONTHLY"),
+  ]),
+  periodStart: t.String({ format: "date" }),
+  periodEnd: t.String({ format: "date" }),
+  timezone: t.Optional(t.String()),
+  columnMap: t.Optional(t.String()),
+});
+export type TryRevenueSummaryInput = Static<typeof TryRevenueSummarySchema>;

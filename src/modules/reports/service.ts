@@ -5,7 +5,10 @@ import {
   PeriodType,
   RawUpload,
 } from "@generated/prisma";
-import type { GenerateRevenueReportInput } from "./schema";
+import type {
+  GenerateRevenueReportInput,
+  TryRevenueSummaryInput,
+} from "./schema";
 import {
   InvalidPeriodError,
   UploadNotReadyError,
@@ -14,8 +17,69 @@ import {
 import { UploadNotFoundError } from "../uploads/error";
 import { computeRevenueSummary } from "./compute-revenue";
 import type { Logger } from "pino";
+import { detectColumns } from "../uploads/detect-columns";
+import { join, resolve } from "node:path";
+import { mkdir, unlink } from "node:fs/promises";
+import { randomUUID } from "node:crypto";
+import { env } from "@/config/env";
 
 export abstract class ReportsService {
+  static async tryComputeRevenue(data: TryRevenueSummaryInput, log: Logger) {
+    log.debug(
+      { filename: data.file.name },
+      "Try revenue summary process started",
+    );
+
+    const tempDir = resolve(env.UPLOAD_DIR, "demo");
+    await mkdir(tempDir, { recursive: true });
+
+    const tempFile = join(
+      tempDir,
+      `${randomUUID()}-${data.file.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`,
+    );
+    await Bun.write(tempFile, data.file);
+
+    try {
+      const detection = await detectColumns(tempFile, log);
+      let finalColumnMap = detection.columnMap;
+
+      if (data.columnMap) {
+        try {
+          const parsedOverrides = JSON.parse(data.columnMap);
+          finalColumnMap = { ...finalColumnMap, ...parsedOverrides };
+        } catch {
+          log.warn("Invalid columnMap JSON provided");
+        }
+      }
+
+      const REQUIRED_KEYS = ["date", "product", "quantity", "unitPrice"];
+      const unmapped = REQUIRED_KEYS.filter((k) => finalColumnMap[k] === null);
+      if (unmapped.length > 0) {
+        return {
+          status: "needs_mapping",
+          detectedColumns: detection.detectedColumns,
+          unmappedRequired: unmapped,
+        };
+      }
+
+      const result = await computeRevenueSummary(
+        {
+          filePath: tempFile,
+          columnMap: finalColumnMap as Record<string, string | null>,
+          periodType: data.periodType,
+          periodStart: data.periodStart,
+          periodEnd: data.periodEnd,
+          timezone: data.timezone,
+        },
+        log,
+      );
+
+      return { status: "success", data: result };
+    } finally {
+      await unlink(tempFile).catch(() => {});
+    }
+  }
+
   static async generateRevenueReport(
     userId: string,
     data: GenerateRevenueReportInput,

@@ -3,6 +3,8 @@ import { ReportsController } from "./controller";
 import {
   GenerateRevenueReportBodySchema,
   GetReportParamsSchema,
+  TryRevenueSummarySchema,
+  TryRevenueSummaryInput,
 } from "./schema";
 import { errorResponse } from "@/libs/response";
 import { UploadNotFoundError } from "../uploads/error";
@@ -104,5 +106,22 @@ export const reports = createBaseApp({ tags: ["Reports"] }).group(
           );
         }
       })
+      .post(
+        "/try-revenue-summary",
+        ({ body, set, log, locale }) =>
+          ReportsController.tryRevenueSummary({
+            body: body as TryRevenueSummaryInput,
+            set,
+            log,
+            locale,
+          }),
+        {
+          body: TryRevenueSummarySchema,
+          detail: {
+            tags: ["Reports"],
+            description: "Try revenue summary without login",
+          },
+        },
+      )
       .use(protectedReports),
 );
