@@ -1,5 +1,5 @@
 import { t, type Static } from "elysia";
-import { createTbResponseSchema, createTbErrorSchema } from "@/libs/response";
+import { createResponseSchema, createErrorSchema } from "@/libs/response";
 
 export const RoleDistributionItemSchema = t.Object({
   roleName: t.String(),
@@ -17,7 +17,7 @@ export const DashboardResponseSchema = t.Object({
 
 export type DashboardResponse = Static<typeof DashboardResponseSchema>;
 
-export const DashboardResponseModelSchema = createTbResponseSchema(
+export const DashboardResponseModelSchema = createResponseSchema(
   DashboardResponseSchema,
 );
-export const DashboardErrorModelSchema = createTbErrorSchema(t.Null());
+export const DashboardErrorModelSchema = createErrorSchema(t.Null());

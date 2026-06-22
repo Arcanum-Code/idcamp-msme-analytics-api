@@ -1,5 +1,5 @@
 import { t, type Static } from "elysia";
-import { createTbResponseSchema, createTbErrorSchema } from "@/libs/response";
+import { createResponseSchema, createErrorSchema } from "@/libs/response";
 
 // ── Existing: Column Map (PATCH) ─────────────────────────────────────
 export const ColumnMapParamSchema = t.Object({
@@ -28,13 +28,13 @@ const ColumnMapResultSchema = t.Record(
   t.Union([t.String(), t.Null()]),
 );
 
-export const SaveColumnMapResponseSchema = createTbResponseSchema(
+export const SaveColumnMapResponseSchema = createResponseSchema(
   t.Object({
     columnMap: ColumnMapResultSchema,
   }),
 );
 
-export const UploadErrorSchema = createTbErrorSchema(t.Null());
+export const UploadErrorSchema = createErrorSchema(t.Null());
 
 // ── New: File Upload (POST) ──────────────────────────────────────────
 export const UploadFileBodySchema = t.Object({
@@ -52,7 +52,7 @@ const UploadFileDataSchema = t.Object({
 });
 
 export const UploadFileResponseSchema =
-  createTbResponseSchema(UploadFileDataSchema);
+  createResponseSchema(UploadFileDataSchema);
 
 export const UploadStatusParamSchema = t.Object({
   uploadId: t.String(),
@@ -73,6 +73,6 @@ export const UploadStatusDataSchema = t.Object({
   ),
 });
 
-export const UploadStatusResponseSchema = createTbResponseSchema(
+export const UploadStatusResponseSchema = createResponseSchema(
   UploadStatusDataSchema,
 );

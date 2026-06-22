@@ -1,9 +1,9 @@
 import { t, type Static } from "elysia";
 import {
-  TbPaginationSchema,
-  createTbResponseSchema,
-  createTbErrorSchema,
-  createTbPaginatedResponseSchema,
+  PaginationSchema,
+  createResponseSchema,
+  createErrorSchema,
+  createPaginatedResponseSchema,
 } from "@/libs/response";
 
 export const CreateUserSchema = t.Object({
@@ -30,7 +30,7 @@ export const UserParamSchema = t.Object({
 });
 
 export const GetUsersQuerySchema = t.Object({
-  ...TbPaginationSchema.properties,
+  ...PaginationSchema.properties,
   search: t.Optional(t.String()),
   roleId: t.Optional(t.String()),
   isActive: t.Optional(
@@ -65,17 +65,17 @@ export const UserWithRoleSchema = t.Object({
   roleName: t.String(),
 });
 
-export const UserResponseSchema = createTbResponseSchema(UserWithRoleSchema);
-export const UsersResponseSchema = createTbPaginatedResponseSchema(
+export const UserResponseSchema = createResponseSchema(UserWithRoleSchema);
+export const UsersResponseSchema = createPaginatedResponseSchema(
   t.Array(UserWithRoleSchema),
 );
 export const UserCreateResultResponseSchema =
-  createTbResponseSchema(UserSafeSchema);
+  createResponseSchema(UserSafeSchema);
 export const UserDeleteResultResponseSchema =
-  createTbResponseSchema(UserSafeSchema);
+  createResponseSchema(UserSafeSchema);
 
-export const UserErrorSchema = createTbErrorSchema(t.Null());
-export const UserValidationErrorSchema = createTbErrorSchema(
+export const UserErrorSchema = createErrorSchema(t.Null());
+export const UserValidationErrorSchema = createErrorSchema(
   t.Array(
     t.Object({
       path: t.String(),

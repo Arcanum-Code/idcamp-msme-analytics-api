@@ -1,12 +1,12 @@
-# Agent Guidelines for Elysia Auth Starter
+# Agent Guidelines for MSME Revenue Summary API
 
-Elysia-based authentication service using Bun, Prisma ORM, and PostgreSQL.
+Elysia-based backend API for MSME revenue summary using AI. Powered by Bun, Prisma ORM, PostgreSQL, and a FastAPI companion service.
 
 ## Setup & Bootstrap
 
 Before executing any development or test commands, ensure your environment is set up:
 1. **Install Dependencies**: `bun install`
-2. **Environment Variables**: `cp .env.example .env` and configure `DATABASE_URL` (and `.env.test` for testing)
+2. **Environment Variables**: `cp .env.example .env` and configure `DATABASE_URL` and `MINI_MODEL_URL` (and `.env.test` for testing)
 3. **Generate Prisma Client**: `bun run prisma:generate` (creates output in `generated/prisma` and `generated/prismabox`)
 4. **Seed Database**: `bun run db:reset` or `bun run prisma:migrate`
 
@@ -46,6 +46,9 @@ bun run prepare                # Configure Husky git hooks
 
 ## Gotchas
 
+- **External AI Model Dependency**: The AI revenue computation relies on an external FastAPI service (`MINI_MODEL_URL`).
+  - *Trigger*: Writing or testing logic that hits the revenue computation endpoint.
+  - *Corrective Action*: Be aware that `process.env.NODE_ENV === "test"` automatically skips the network call and returns mock data. In `development`, it falls back to mock data if FastAPI is unreachable. Do not manually mock the `fetch` call in tests, as the service handles it natively.
 - **Refresh Token Reuse Alert**: When a revoked refresh token is reused, **YOU MUST** revoke all other tokens for that user and increment `tokenVersion` to prevent brute-force attacks.
   - *Trigger*: Reused token detected in `AuthService.refresh`
   - *Corrective Action*: Run both updates inside a transaction:
@@ -81,8 +84,7 @@ bun run prepare                # Configure Husky git hooks
 ## References
 
 For deep-dives on patterns, standards, and step-by-step templates:
-- **Code Style & i18n Guidelines**: [.agents/skills/code-review/references/code-style.md](file:///home/titanic/dev/web/node/elysia-auth-starter/.agents/skills/code-review/references/code-style.md)
-- **Testing & Test DB Setup**: [.agents/skills/code-review/references/testing.md](file:///home/titanic/dev/web/node/elysia-auth-starter/.agents/skills/code-review/references/testing.md)
+- **Code Style & i18n Guidelines**: [.agents/skills/code-review/references/code-style.md](.agents/skills/code-review/references/code-style.md)
+- **Testing & Test DB Setup**: [.agents/skills/code-review/references/testing.md](.agents/skills/code-review/references/testing.md)
 - **Writing Integration Tests**: [.agents/skills/writing-tests/SKILL.md](.agents/skills/writing-tests/SKILL.md) / [test-patterns reference](.agents/skills/writing-tests/references/test-patterns.md)
-- **Feature Implementation Walkthrough**: [.agents/skills/writing-plans/references/feature-template.md](file:///home/titanic/dev/web/node/elysia-auth-starter/.agents/skills/writing-plans/references/feature-template.md) / [executing-plans version](file:///home/titanic/dev/web/node/elysia-auth-starter/.agents/skills/executing-plans/references/feature-template.md)
-
+- **Feature Implementation Walkthrough**: [.agents/skills/writing-plans/references/feature-template.md](.agents/skills/writing-plans/references/feature-template.md) / [executing-plans version](.agents/skills/executing-plans/references/feature-template.md)
