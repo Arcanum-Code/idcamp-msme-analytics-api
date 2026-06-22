@@ -1,5 +1,5 @@
 import { t, type Static } from "elysia";
-import { createTbResponseSchema, createTbErrorSchema } from "@/libs/response";
+import { createResponseSchema, createErrorSchema } from "@/libs/response";
 
 /**
  * Input validation schemas
@@ -56,20 +56,20 @@ export const AuthTokenResponseSchema = t.Object({
 /**
  * Auth model schemas
  */
-export const AuthLoginResponseSchema = createTbResponseSchema(
+export const AuthLoginResponseSchema = createResponseSchema(
   AuthTokenResponseSchema,
 );
-export const AuthRefreshResponseSchema = createTbResponseSchema(
+export const AuthRefreshResponseSchema = createResponseSchema(
   AuthTokenResponseSchema,
 );
-export const AuthLogoutResponseSchema = createTbResponseSchema(t.Null());
-export const AuthMeResponseSchema = createTbResponseSchema(
+export const AuthLogoutResponseSchema = createResponseSchema(t.Null());
+export const AuthMeResponseSchema = createResponseSchema(
   PublicUserWithRoleSchema,
 );
 
-export const AuthErrorSchema = createTbErrorSchema(t.Null());
+export const AuthErrorSchema = createErrorSchema(t.Null());
 
-export const AuthValidationErrorSchema = createTbErrorSchema(
+export const AuthValidationErrorSchema = createErrorSchema(
   t.Array(
     t.Object({
       path: t.String(),
@@ -78,13 +78,13 @@ export const AuthValidationErrorSchema = createTbErrorSchema(
   ),
 );
 
-export const AuthUnauthorizedErrorSchema = createTbErrorSchema(
+export const AuthUnauthorizedErrorSchema = createErrorSchema(
   t.Object({
     message: t.String(),
   }),
 );
 
-export const AuthAccountDisabledErrorSchema = createTbErrorSchema(
+export const AuthAccountDisabledErrorSchema = createErrorSchema(
   t.Object({
     message: t.String(),
   }),

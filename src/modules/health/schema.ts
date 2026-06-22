@@ -1,5 +1,5 @@
 import { t } from "elysia";
-import { createTbResponseSchema } from "@/libs/response";
+import { createResponseSchema } from "@/libs/response";
 
 export const HealthDetailsSchema = t.Object({
   status: t.String(),
@@ -10,4 +10,4 @@ export const HealthDetailsSchema = t.Object({
   }),
 });
 
-export const HealthResponse = createTbResponseSchema(HealthDetailsSchema);
+export const HealthResponse = createResponseSchema(HealthDetailsSchema);

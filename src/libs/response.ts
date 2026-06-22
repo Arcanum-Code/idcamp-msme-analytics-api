@@ -1,5 +1,4 @@
-import { Context, t } from "elysia";
-import z, { ZodType } from "zod";
+import { Context, t, type TSchema } from "elysia";
 import { t as translate, type Translator } from "@/libs/i18n";
 
 type ElysiaSet = Context["set"];
@@ -63,76 +62,15 @@ export const errorResponse = <TIssues = null>(
 };
 
 // =================-------------------------
-// ZOD-BASED SCHEMAS (FOR BACKWARD COMPATIBILITY)
+// TYPEBOX-BASED SCHEMAS (STANDARD)
 // =================-------------------------
 
-export const PaginationSchema = z.object({
-  page: z
-    .preprocess(
-      (val) => (val === undefined ? undefined : Number(val)),
-      z
-        .number()
-        .min(1, { message: "Page number must be at least 1" })
-        .default(1),
-    )
-    .optional(),
-
-  limit: z
-    .preprocess(
-      (val) => (val === undefined ? undefined : Number(val)),
-      z
-        .number()
-        .min(1, { message: "Limit must be between 1 and 100" })
-        .max(100, { message: "Limit must be between 1 and 100" })
-        .default(10),
-    )
-    .optional(),
-});
-
-export const createResponseSchema = <T extends ZodType>(schema: T) =>
-  z.object({
-    error: z.boolean().default(false),
-    code: z.number(),
-    message: z.string(),
-    data: z.union([schema, z.null()]),
-  });
-
-export const createErrorSchema = (schema: ZodType = z.any()) =>
-  z.object({
-    error: z.boolean().default(true),
-    code: z.number(),
-    message: z.string(),
-    issues: z.union([schema, z.null()]),
-  });
-
-export const createPaginatedResponseSchema = <T extends ZodType>(
-  itemSchema: T,
-) =>
-  z.object({
-    error: z.boolean(),
-    code: z.number(),
-    message: z.string(),
-    data: itemSchema,
-    pagination: z.object({
-      total: z.number(),
-      page: z.number(),
-      limit: z.number(),
-      totalPages: z.number(),
-    }),
-  });
-
-// =================-------------------------
-// TYPEBOX-BASED SCHEMAS (NEW STANDARD)
-// =================-------------------------
-
-import { type TSchema } from "elysia";
-
-export const TbPaginationSchema = t.Object({
+export const PaginationSchema = t.Object({
   page: t.Optional(t.Numeric({ minimum: 1, default: 1 })),
   limit: t.Optional(t.Numeric({ minimum: 1, maximum: 100, default: 10 })),
 });
 
-export const createTbResponseSchema = <T extends TSchema>(schema: T) =>
+export const createResponseSchema = <T extends TSchema>(schema: T) =>
   t.Object({
     error: t.Boolean({ default: false }),
     code: t.Number(),
@@ -140,7 +78,7 @@ export const createTbResponseSchema = <T extends TSchema>(schema: T) =>
     data: t.Union([schema, t.Null()]),
   });
 
-export const createTbErrorSchema = <T extends TSchema>(
+export const createErrorSchema = <T extends TSchema>(
   schema: T = t.Any() as unknown as T,
 ) =>
   t.Object({
@@ -150,7 +88,7 @@ export const createTbErrorSchema = <T extends TSchema>(
     issues: t.Union([schema, t.Null()]),
   });
 
-export const createTbPaginatedResponseSchema = <T extends TSchema>(
+export const createPaginatedResponseSchema = <T extends TSchema>(
   itemSchema: T,
 ) =>
   t.Object({

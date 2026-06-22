@@ -1,9 +1,9 @@
 import { t, type Static } from "elysia";
 import {
-  TbPaginationSchema,
-  createTbResponseSchema,
-  createTbErrorSchema,
-  createTbPaginatedResponseSchema,
+  PaginationSchema,
+  createResponseSchema,
+  createErrorSchema,
+  createPaginatedResponseSchema,
 } from "@/libs/response";
 
 /**
@@ -136,18 +136,18 @@ export const FeatureParamSchema = t.Object({
 });
 
 export const GetFeaturesQuerySchema = t.Object({
-  ...TbPaginationSchema.properties,
+  ...PaginationSchema.properties,
   search: t.Optional(t.String()),
 });
 
 export const GetRolesQuerySchema = t.Object({
-  ...TbPaginationSchema.properties,
+  ...PaginationSchema.properties,
   search: t.Optional(t.String()),
   feature: t.Optional(t.String()),
 });
 
 export const GetRolesOptionsQuerySchema = t.Object({
-  ...TbPaginationSchema.properties,
+  ...PaginationSchema.properties,
   search: t.Optional(t.String()),
 });
 
@@ -216,32 +216,31 @@ export const MyRoleResponseSchema = t.Object({
 /**
  * Rbac Model exports for router
  */
-export const RbacGetFeaturesResponseSchema = createTbPaginatedResponseSchema(
+export const RbacGetFeaturesResponseSchema = createPaginatedResponseSchema(
   t.Array(PublicFeatureSchema),
 );
 export const RbacCreateFeatureResponseSchema =
-  createTbResponseSchema(PublicFeatureSchema);
+  createResponseSchema(PublicFeatureSchema);
 export const RbacUpdateFeatureResponseSchema =
-  createTbResponseSchema(PublicFeatureSchema);
+  createResponseSchema(PublicFeatureSchema);
 export const RbacDeleteFeatureResponseSchema =
-  createTbResponseSchema(PublicFeatureSchema);
+  createResponseSchema(PublicFeatureSchema);
 
-export const RbacGetRoleResponseSchema =
-  createTbResponseSchema(PublicRoleSchema);
-export const RbacGetRolesResponseSchema = createTbPaginatedResponseSchema(
+export const RbacGetRoleResponseSchema = createResponseSchema(PublicRoleSchema);
+export const RbacGetRolesResponseSchema = createPaginatedResponseSchema(
   t.Array(t.Omit(PublicRoleSchema, ["permissions"])),
 );
-export const RbacGetRoleOptionsResponseSchema = createTbPaginatedResponseSchema(
+export const RbacGetRoleOptionsResponseSchema = createPaginatedResponseSchema(
   t.Array(RoleOptionSchema),
 );
 export const RbacGetMyRoleResponseSchema =
-  createTbResponseSchema(MyRoleResponseSchema);
+  createResponseSchema(MyRoleResponseSchema);
 export const RbacCreateRoleResponseSchema =
-  createTbResponseSchema(PublicRoleSchema);
+  createResponseSchema(PublicRoleSchema);
 export const RbacUpdateRoleResponseSchema =
-  createTbResponseSchema(PublicRoleSchema);
+  createResponseSchema(PublicRoleSchema);
 
-export const RbacDeleteRoleResponseSchema = createTbResponseSchema(
+export const RbacDeleteRoleResponseSchema = createResponseSchema(
   t.Object({
     id: t.String(),
     name: t.String(),
@@ -251,8 +250,8 @@ export const RbacDeleteRoleResponseSchema = createTbResponseSchema(
   }),
 );
 
-export const RbacErrorSchema = createTbErrorSchema(t.Null());
-export const RbacValidationErrorSchema = createTbErrorSchema(
+export const RbacErrorSchema = createErrorSchema(t.Null());
+export const RbacValidationErrorSchema = createErrorSchema(
   t.Array(
     t.Object({
       path: t.String(),
