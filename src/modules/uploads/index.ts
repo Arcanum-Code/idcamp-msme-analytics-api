@@ -26,6 +26,7 @@ const FEATURE_NAME = "uploads_management";
 const protectedUploads = createProtectedApp()
   .post("/", UploadController.uploadFile, {
     beforeHandle: hasPermission(FEATURE_NAME, "create"),
+    parse: "multipart/form-data",
     body: UploadFileBodySchema,
     response: {
       202: UploadFileResponseSchema,

@@ -117,6 +117,7 @@ export const reports = createBaseApp({ tags: ["Reports"] }).group(
           }),
         {
           body: TryRevenueSummarySchema,
+          parse: "multipart/form-data",
           detail: {
             tags: ["Reports"],
             description: "Try revenue summary without login",
