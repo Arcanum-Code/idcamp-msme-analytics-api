@@ -74,6 +74,16 @@ A production-ready authentication service with Role-Based Access Control (RBAC).
         description:
           "Dashboard statistics - View system overview (total users, roles, features, user distribution). Accessible to all authenticated users.",
       },
+      {
+        name: "Reports",
+        description:
+          "Report generation and summary endpoints. Handles AI-powered revenue summarization and reporting.",
+      },
+      {
+        name: "Uploads",
+        description:
+          "File upload and data mapping endpoints. Supports uploading MSME data files and mapping columns.",
+      },
     ],
 
     components: {

@@ -30,6 +30,9 @@ const publicAuth = createBaseApp()
       403: AuthAccountDisabledErrorSchema,
       500: AuthErrorSchema,
     },
+    detail: {
+      description: "Authenticate user and receive access and refresh tokens.",
+    },
   })
   .post("/refresh", AuthController.refresh, {
     body: RefreshTokenSchema,
@@ -39,6 +42,9 @@ const publicAuth = createBaseApp()
       400: AuthValidationErrorSchema,
       500: AuthErrorSchema,
     },
+    detail: {
+      description: "Refresh access token using a valid refresh token.",
+    },
   })
   .post("/logout", AuthController.logout, {
     body: TokenSchema,
@@ -46,6 +52,9 @@ const publicAuth = createBaseApp()
       200: AuthLogoutResponseSchema,
       401: AuthUnauthorizedErrorSchema,
       500: AuthErrorSchema,
+    },
+    detail: {
+      description: "Logout current device by invalidating the refresh token.",
     },
   });
 
@@ -60,12 +69,20 @@ const protectedAuth = createProtectedApp()
       403: AuthAccountDisabledErrorSchema,
       500: AuthErrorSchema,
     },
+    detail: {
+      description:
+        "Logout all devices by invalidating all refresh tokens for the user.",
+    },
   })
   .get("/me", AuthController.me, {
     response: {
       200: AuthMeResponseSchema,
       404: AuthErrorSchema,
       500: AuthErrorSchema,
+    },
+    detail: {
+      description:
+        "Get profile information of the currently authenticated user.",
     },
   });
 
