@@ -32,6 +32,9 @@ const protectedUploads = createProtectedApp()
       400: UploadErrorSchema,
       422: UploadErrorSchema,
     },
+    detail: {
+      description: "Upload a CSV/Excel file containing MSME transaction data.",
+    },
   })
   .patch("/:uploadId/column-map", UploadController.saveColumnMap, {
     beforeHandle: hasPermission(FEATURE_NAME, "update"),
@@ -43,6 +46,10 @@ const protectedUploads = createProtectedApp()
       404: UploadErrorSchema,
       409: UploadErrorSchema,
     },
+    detail: {
+      description:
+        "Save column mapping for an uploaded file to standardize data structure.",
+    },
   })
   .get("/:uploadId/status", UploadController.getUploadStatus, {
     beforeHandle: hasPermission(FEATURE_NAME, "read"),
@@ -50,6 +57,9 @@ const protectedUploads = createProtectedApp()
     response: {
       200: UploadStatusResponseSchema,
       404: UploadErrorSchema,
+    },
+    detail: {
+      description: "Get the current processing status of an uploaded file.",
     },
   });
 

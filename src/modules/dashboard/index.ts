@@ -9,6 +9,10 @@ const protectedDashboard = createProtectedApp().get(
   "/",
   DashboardController.getDashboard,
   {
+    detail: {
+      description:
+        "Retrieve dashboard statistics including users, roles, and feature counts.",
+    },
     response: {
       200: DashboardResponseModelSchema,
       500: DashboardErrorModelSchema,

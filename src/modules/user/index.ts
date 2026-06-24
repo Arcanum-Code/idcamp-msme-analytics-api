@@ -22,6 +22,9 @@ const FEATURE_NAME = "user_management";
 
 const protectedUser = createProtectedApp()
   .get("/", UserController.getUsers, {
+    detail: {
+      description: "Retrieve a paginated list of users.",
+    },
     query: GetUsersQuerySchema,
     beforeHandle: hasPermission(FEATURE_NAME, "read"),
     response: {
@@ -30,6 +33,9 @@ const protectedUser = createProtectedApp()
     },
   })
   .post("/", UserController.createUser, {
+    detail: {
+      description: "Create a new user and assign a role.",
+    },
     beforeHandle: hasPermission(FEATURE_NAME, "create"),
     body: CreateUserSchema,
     response: {
@@ -40,6 +46,9 @@ const protectedUser = createProtectedApp()
     },
   })
   .get("/:id", UserController.getUser, {
+    detail: {
+      description: "Retrieve details of a specific user.",
+    },
     beforeHandle: hasPermission(FEATURE_NAME, "read"),
     params: UserParamSchema,
     response: {
@@ -49,6 +58,9 @@ const protectedUser = createProtectedApp()
     },
   })
   .patch("/:id", UserController.updateUser, {
+    detail: {
+      description: "Update an existing user's information or status.",
+    },
     beforeHandle: hasPermission(FEATURE_NAME, "update"),
     params: UserParamSchema,
     body: UpdateUserSchema,
@@ -60,6 +72,9 @@ const protectedUser = createProtectedApp()
     },
   })
   .delete("/:id", UserController.deleteUser, {
+    detail: {
+      description: "Delete a user from the system.",
+    },
     beforeHandle: hasPermission(FEATURE_NAME, "delete"),
     params: UserParamSchema,
     response: {

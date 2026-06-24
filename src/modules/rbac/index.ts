@@ -42,6 +42,7 @@ const protectedRbac = createProtectedApp()
   // FEATURES CRUD
   // -------------------------
   .get("/features", RbacController.getAllFeatures, {
+    detail: { description: "Retrieve a paginated list of all features." },
     query: GetFeaturesQuerySchema,
     beforeHandle: hasPermission(FEATURE_NAME, "read"),
     response: {
@@ -50,15 +51,18 @@ const protectedRbac = createProtectedApp()
     },
   })
   .post("/features", RbacController.createFeature, {
+    detail: { description: "Create a new feature for RBAC." },
     beforeHandle: hasPermission(FEATURE_NAME, "create"),
     body: CreateFeatureSchema,
     response: {
       201: RbacCreateFeatureResponseSchema,
       400: RbacValidationErrorSchema,
       500: RbacErrorSchema,
+      409: RbacErrorSchema,
     },
   })
   .patch("/features/:id", RbacController.updateFeature, {
+    detail: { description: "Update an existing feature." },
     beforeHandle: hasPermission(FEATURE_NAME, "update"),
     params: FeatureParamSchema,
     body: UpdateFeatureSchema,
@@ -66,14 +70,19 @@ const protectedRbac = createProtectedApp()
       200: RbacUpdateFeatureResponseSchema,
       400: RbacValidationErrorSchema,
       500: RbacErrorSchema,
+      404: RbacErrorSchema,
+      409: RbacErrorSchema,
     },
   })
   .delete("/features/:id", RbacController.deleteFeature, {
+    detail: { description: "Delete a feature." },
     beforeHandle: hasPermission(FEATURE_NAME, "delete"),
     params: FeatureParamSchema,
     response: {
       200: RbacDeleteFeatureResponseSchema,
       500: RbacErrorSchema,
+      400: RbacErrorSchema,
+      404: RbacErrorSchema,
     },
   })
 
@@ -81,6 +90,10 @@ const protectedRbac = createProtectedApp()
   // ROLES CRUD
   // -------------------------
   .get("/roles", RbacController.getAllRoles, {
+    detail: {
+      description:
+        "Retrieve a paginated list of all roles with their associated features.",
+    },
     query: GetRolesQuerySchema,
     beforeHandle: hasPermission(FEATURE_NAME, "read"),
     response: {
@@ -89,6 +102,9 @@ const protectedRbac = createProtectedApp()
     },
   })
   .get("/roles/options", RbacController.getRoleOptions, {
+    detail: {
+      description: "Retrieve a simplified list of roles for dropdown options.",
+    },
     query: GetRolesOptionsQuerySchema,
     beforeHandle: hasPermission(FEATURE_NAME, "read"),
     response: {
@@ -97,12 +113,19 @@ const protectedRbac = createProtectedApp()
     },
   })
   .get("/roles/me", RbacController.getMyRole, {
+    detail: {
+      description:
+        "Retrieve the role and features of the currently authenticated user.",
+    },
     response: {
       200: RbacGetMyRoleResponseSchema,
       500: RbacErrorSchema,
     },
   })
   .get("/roles/:id", RbacController.getRole, {
+    detail: {
+      description: "Retrieve detailed information about a specific role.",
+    },
     beforeHandle: hasPermission(FEATURE_NAME, "read"),
     params: RoleParamSchema,
     response: {
@@ -112,6 +135,9 @@ const protectedRbac = createProtectedApp()
     },
   })
   .post("/roles", RbacController.createRole, {
+    detail: {
+      description: "Create a new role with specific feature permissions.",
+    },
     beforeHandle: hasPermission(FEATURE_NAME, "create"),
     body: CreateRoleSchema,
     response: {
@@ -121,6 +147,7 @@ const protectedRbac = createProtectedApp()
     },
   })
   .patch("/roles/:id", RbacController.updateRole, {
+    detail: { description: "Update an existing role and its permissions." },
     beforeHandle: hasPermission(FEATURE_NAME, "update"),
     params: RoleParamSchema,
     body: UpdateRoleSchema,
@@ -131,6 +158,7 @@ const protectedRbac = createProtectedApp()
     },
   })
   .delete("/roles/:id", RbacController.deleteRole, {
+    detail: { description: "Delete an existing role." },
     beforeHandle: hasPermission(FEATURE_NAME, "delete"),
     params: RoleParamSchema,
     response: {
