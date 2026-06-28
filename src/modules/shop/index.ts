@@ -5,6 +5,7 @@ import {
   UpdateShopSchema,
   ShopParamSchema,
   ShopResponseSchema,
+  ShopMeResponseSchema,
   ShopsResponseSchema,
   ShopCreateResultResponseSchema,
   ShopDeleteResultResponseSchema,
@@ -35,6 +36,13 @@ const protectedShop = createProtectedApp()
     response: {
       201: ShopCreateResultResponseSchema,
       400: ShopValidationErrorSchema,
+      500: ShopErrorSchema,
+    },
+  })
+  .get("/me", ShopController.getMyShop, {
+    detail: { description: "Retrieve the shop of the authenticated user." },
+    response: {
+      200: ShopMeResponseSchema,
       500: ShopErrorSchema,
     },
   })

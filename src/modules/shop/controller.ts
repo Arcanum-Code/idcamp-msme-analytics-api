@@ -98,6 +98,29 @@ export class ShopController {
     }
   }
 
+  static async getMyShop({
+    user,
+    set,
+    log,
+    locale,
+  }: {
+    user: { id: string };
+    set: Context["set"];
+    log: Logger;
+    locale: string;
+  }) {
+    const shop = await ShopService.getMyShop(user.id, log);
+
+    return successResponse(
+      set,
+      shop,
+      { key: "shop.getSuccess" },
+      200,
+      undefined,
+      locale,
+    );
+  }
+
   static async updateShop({
     body,
     params,

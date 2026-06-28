@@ -118,6 +118,25 @@ export abstract class ShopService {
     };
   }
 
+  static async getMyShop(userId: string, log: Logger) {
+    log.debug({ userId }, "Fetching shop for authenticated user");
+
+    const shop = await prisma.shop.findFirst({
+      where: { ownerId: userId },
+      select: SAFE_SHOP_SELECT,
+    });
+
+    log.info({ shopId: shop?.id, userId }, "User shop retrieved");
+
+    if (!shop) return null;
+
+    return {
+      ...shop,
+      createdAt: shop.createdAt.toISOString(),
+      updatedAt: shop.updatedAt.toISOString(),
+    };
+  }
+
   static async updateShop(
     id: string,
     data: UpdateShopInput,

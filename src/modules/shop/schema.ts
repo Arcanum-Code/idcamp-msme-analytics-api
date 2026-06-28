@@ -42,6 +42,9 @@ export const ShopSafeSchema = t.Object({
 });
 
 export const ShopResponseSchema = createResponseSchema(ShopSafeSchema);
+export const ShopMeResponseSchema = createResponseSchema(
+  t.Union([ShopSafeSchema, t.Null()]),
+);
 export const ShopsResponseSchema = createPaginatedResponseSchema(
   t.Array(ShopSafeSchema),
 );

@@ -1,8 +1,16 @@
-import { describe, expect, it, beforeAll, afterAll } from "bun:test";
+import {
+  describe,
+  expect,
+  it,
+  beforeAll,
+  afterAll,
+  beforeEach,
+} from "bun:test";
 import { app } from "@/server";
 import { prisma } from "@/libs/prisma";
 import {
   createAuthenticatedUser,
+  createTestRoleWithPermissions,
   randomIp,
   resetDatabase,
 } from "../test_utils";
@@ -128,5 +136,70 @@ describe("Shop API", () => {
       }),
     );
     expect(getResponse.status).toBe(404);
+  });
+
+  describe("GET /api/shops/me", () => {
+    beforeEach(async () => {
+      await resetDatabase();
+      await createTestRoleWithPermissions("TestUser", []);
+    });
+
+    it("should return 401 if user is not logged in", async () => {
+      const response = await app.handle(
+        new Request("http://localhost/api/shops/me", {
+          headers: {
+            "x-forwarded-for": randomIp(),
+          },
+        }),
+      );
+      expect(response.status).toBe(401);
+    });
+
+    it("should return 200 with null data if user has no shop", async () => {
+      const { token: accessToken } = await createAuthenticatedUser({
+        id: "test-no-shop",
+        email: "test-no-shop@example.com",
+      });
+      const response = await app.handle(
+        new Request("http://localhost/api/shops/me", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "x-forwarded-for": randomIp(),
+          },
+        }),
+      );
+      expect(response.status).toBe(200);
+      const data = (await response.json()) as any;
+      expect(data.data).toBeNull();
+    });
+
+    it("should return 200 with shop data if user has a shop", async () => {
+      const { user, token: accessToken } = await createAuthenticatedUser({
+        id: "test-has-shop",
+        email: "test-has-shop@example.com",
+      });
+
+      // Create a shop for the user
+      await prisma.shop.create({
+        data: {
+          name: "My Awesome Shop",
+          description: "This is my shop",
+          ownerId: user.id,
+        },
+      });
+
+      const response = await app.handle(
+        new Request("http://localhost/api/shops/me", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "x-forwarded-for": randomIp(),
+          },
+        }),
+      );
+      expect(response.status).toBe(200);
+      const data = (await response.json()) as any;
+      expect(data.data.name).toBe("My Awesome Shop");
+      expect(data.data.ownerId).toBe(user.id);
+    });
   });
 });
