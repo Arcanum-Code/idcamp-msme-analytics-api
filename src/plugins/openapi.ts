@@ -84,6 +84,11 @@ A production-ready authentication service with Role-Based Access Control (RBAC).
         description:
           "File upload and data mapping endpoints. Supports uploading MSME data files and mapping columns.",
       },
+      {
+        name: "Shop",
+        description:
+          "Shop management - Create, read, update, delete shops. Requires shop_management permissions.",
+      },
     ],
 
     components: {
