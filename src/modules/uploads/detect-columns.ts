@@ -55,33 +55,16 @@ export interface DetectColumnsResult {
 }
 
 /**
- * Mock implementation of FastAPI `POST /internal/detect-columns`.
- *
- * Reads the header row of a CSV file and matches each column to a
- * standard field key using case-insensitive alias matching.
- *
- * **Excel limitation:** The mock cannot parse binary Excel files without
- * a third-party library. Excel uploads return `confidence: "partial"` with
- * all required keys unmapped so the user can resolve them manually via
- * `PATCH /api/uploads/:uploadId/column-map`. The real FastAPI service
- * (pandas) handles Excel natively.
- *
- * **Swap instructions:** When FastAPI is ready, replace the body of this
- * function with an HTTP call:
- * ```
- * const res = await fetch("http://localhost:5000/internal/detect-columns", {
- *   method: "POST",
- *   headers: { "Content-Type": "application/json" },
- *   body: JSON.stringify({ filePath }),
- * });
- * return res.json();
- * ```
+ * Helper to run the local mock column detection (useful for tests and dev fallback).
  */
-export async function detectColumns(
+async function runLocalMock(
   filePath: string,
   log: Logger,
 ): Promise<DetectColumnsResult> {
-  log.debug({ filePath }, "Mock detect-columns: reading file headers");
+  log.debug(
+    { filePath },
+    "Running local mock detect-columns: reading file headers",
+  );
 
   const file = Bun.file(filePath);
   const exists = await file.exists();
@@ -161,4 +144,68 @@ export async function detectColumns(
     detectedColumns: headers,
     unmappedRequired,
   };
+}
+
+/**
+ * Detect columns by making a request to the FastAPI companion service.
+ * In test environment or development fallback, it will run local mock detection instead.
+ */
+export async function detectColumns(
+  filePath: string,
+  log: Logger,
+): Promise<DetectColumnsResult> {
+  if (process.env.NODE_ENV === "test") {
+    log.info(
+      { filePath },
+      "Test environment detected — returning mock detect-columns result",
+    );
+    return runLocalMock(filePath, log);
+  }
+
+  const modelUrl = process.env.MINI_MODEL_URL || "http://localhost:5000";
+  const endpoint = `${modelUrl}/internal/detect-columns`;
+
+  log.debug(
+    { filePath, endpoint },
+    "Calling FastAPI service for column detection",
+  );
+
+  try {
+    const res = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ filePath }),
+    });
+
+    if (!res.ok) {
+      log.error(
+        { status: res.status, statusText: res.statusText },
+        "FastAPI service failed",
+      );
+      throw new Error(`FASTAPI_ERROR: ${res.statusText}`);
+    }
+
+    const data = (await res.json()) as DetectColumnsResult;
+
+    log.info(
+      {
+        confidence: data.confidence,
+        unmappedRequired: data.unmappedRequired,
+        detectedColumns: data.detectedColumns,
+      },
+      "FastAPI detect-columns: detection complete",
+    );
+
+    return data;
+  } catch (error) {
+    log.warn(
+      { err: error, filePath },
+      "Failed to connect to FastAPI — returning fallback mock response",
+    );
+    // Fallback mock response for dev environment if FastAPI is down
+    if (process.env.NODE_ENV === "development") {
+      return runLocalMock(filePath, log);
+    }
+    throw error;
+  }
 }
