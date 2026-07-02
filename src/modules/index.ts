@@ -6,3 +6,4 @@ export { rbac } from "./rbac";
 export { dashboard } from "./dashboard";
 export { uploads } from "./uploads";
 export { reports } from "./reports";
+export { shop } from "./shop";

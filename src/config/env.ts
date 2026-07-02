@@ -34,7 +34,7 @@ const envSchema = t.Object({
 
   DATABASE_URL: t.String({ format: "uri" }),
 
-  UPLOAD_DIR: t.String({ default: "./uploads" }),
+  UPLOAD_DIR: t.String({ default: "../uploads" }),
   MAX_FILE_SIZE_MB: NumericStringWithDefault("10"),
   MINI_MODEL_URL: t.String({ format: "uri", default: "http://localhost:5000" }),
 });
