@@ -74,7 +74,7 @@ describe("POST /api/reports/try-revenue-summary", () => {
       product: "nama_produk",
       quantity: "kuantitas",
       unitPrice: "harga",
-      totalPrice: "total",
+      revenue: "total",
     };
     formData.append("columnMap", JSON.stringify(overrides));
 

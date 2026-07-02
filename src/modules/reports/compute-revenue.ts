@@ -68,12 +68,37 @@ export async function computeRevenueSummary(
     });
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
+      const errorData: unknown = await response.json().catch(() => ({}));
       log.error(
         { status: response.status, errorData },
         "FastAPI computation failed",
       );
-      throw new Error(errorData.message || "Computation failed");
+
+      let errorMessage = "Computation failed";
+      if (errorData && typeof errorData === "object") {
+        const detail = (errorData as Record<string, unknown>).detail;
+        if (Array.isArray(detail)) {
+          errorMessage = detail
+            .map((err) => {
+              if (err && typeof err === "object") {
+                const loc = (err as Record<string, unknown>).loc;
+                const msg = (err as Record<string, unknown>).msg;
+                const locStr = Array.isArray(loc) ? loc.join(".") : "";
+                return locStr ? `${locStr}: ${msg}` : String(msg);
+              }
+              return String(err);
+            })
+            .join(", ");
+        } else if (typeof detail === "string") {
+          errorMessage = detail;
+        } else {
+          const message = (errorData as Record<string, unknown>).message;
+          if (typeof message === "string") {
+            errorMessage = message;
+          }
+        }
+      }
+      throw new Error(errorMessage);
     }
 
     return (await response.json()) as ComputeRevenueResult;
