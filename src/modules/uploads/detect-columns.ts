@@ -34,12 +34,27 @@ const ALIAS_MAP: Record<string, string[]> = {
   ],
   quantity: ["transaction_qty", "quantity", "jumlah", "qty", "kuantitas"],
   unitPrice: ["unit_price", "harga_satuan", "price", "harga", "harga_unit"],
-  totalPrice: ["total_price", "total_harga", "total", "amount", "jumlah_harga"],
+  revenue: [
+    "total_price",
+    "total_harga",
+    "total",
+    "amount",
+    "jumlah_harga",
+    "revenue",
+    "total_transactions",
+  ],
   paymentMethod: [
     "payment_method",
     "metode_bayar",
     "payment",
     "metode_pembayaran",
+  ],
+  transactions: [
+    "transactions",
+    "transaction_count",
+    "jumlah_transaksi",
+    "transaksi",
+    "total_transactions",
   ],
 };
 

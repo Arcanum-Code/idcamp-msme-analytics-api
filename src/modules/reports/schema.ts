@@ -1,5 +1,6 @@
 import { Static, t } from "elysia";
 import { PeriodType } from "@generated/prisma";
+import { createResponseSchema } from "@/libs/response";
 
 export const GenerateRevenueReportBodySchema = t.Object({
   uploadId: t.String(),
@@ -11,18 +12,23 @@ export const GenerateRevenueReportBodySchema = t.Object({
 export type GenerateRevenueReportInput =
   typeof GenerateRevenueReportBodySchema.static;
 
-export const GenerateRevenueReportAcceptedResponseSchema = t.Object({
-  reportId: t.String(),
-  status: t.String(),
-  message: t.String(),
-});
+export const GenerateRevenueReportAcceptedResponseSchema = createResponseSchema(
+  t.Object({
+    reportId: t.String(),
+    status: t.String(),
+    message: t.String(),
+    cached: t.Boolean(),
+  }),
+);
 
-export const GenerateRevenueReportCachedResponseSchema = t.Object({
-  reportId: t.String(),
-  status: t.String(),
-  cached: t.Boolean(),
-  computedAt: t.Optional(t.String()),
-});
+export const GenerateRevenueReportCachedResponseSchema = createResponseSchema(
+  t.Object({
+    reportId: t.String(),
+    status: t.String(),
+    cached: t.Boolean(),
+    computedAt: t.Optional(t.String()),
+  }),
+);
 
 export const ReportsErrorSchema = t.Object({
   error: t.Object({

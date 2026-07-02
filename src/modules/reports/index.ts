@@ -2,6 +2,8 @@ import { createBaseApp, createProtectedApp } from "@/libs/base";
 import { ReportsController } from "./controller";
 import {
   GenerateRevenueReportBodySchema,
+  GenerateRevenueReportAcceptedResponseSchema,
+  GenerateRevenueReportCachedResponseSchema,
   GetReportParamsSchema,
   TryRevenueSummarySchema,
   TryRevenueSummaryInput,
@@ -28,6 +30,10 @@ const protectedReports = createProtectedApp()
       }),
     {
       body: GenerateRevenueReportBodySchema,
+      response: {
+        202: GenerateRevenueReportAcceptedResponseSchema,
+        200: GenerateRevenueReportCachedResponseSchema,
+      },
       detail: {
         tags: ["Reports"],
         description:

@@ -227,8 +227,9 @@ describe("PATCH /api/uploads/:uploadId/column-map", () => {
         category: "product_category",
         quantity: "transaction_qty",
         unitPrice: "unit_price",
-        totalPrice: null,
+        revenue: null,
         paymentMethod: null,
+        transactions: null,
       },
     });
 
@@ -268,8 +269,9 @@ describe("PATCH /api/uploads/:uploadId/column-map", () => {
         category: null,
         quantity: "transaction_qty",
         unitPrice: "unit_price",
-        totalPrice: null,
+        revenue: null,
         paymentMethod: null,
+        transactions: null,
       },
     });
 
@@ -277,8 +279,9 @@ describe("PATCH /api/uploads/:uploadId/column-map", () => {
       resolvedMappings: {
         product: "Nama Menu",
         category: "Kategori",
-        totalPrice: "Total Harga",
+        revenue: "Total Harga",
         paymentMethod: "Metode Bayar",
+        transactions: "Trans",
       },
     });
 
@@ -286,8 +289,9 @@ describe("PATCH /api/uploads/:uploadId/column-map", () => {
     expect(res.status).toBe(200);
     expect(body.data.columnMap.product).toBe("Nama Menu");
     expect(body.data.columnMap.category).toBe("Kategori");
-    expect(body.data.columnMap.totalPrice).toBe("Total Harga");
+    expect(body.data.columnMap.revenue).toBe("Total Harga");
     expect(body.data.columnMap.paymentMethod).toBe("Metode Bayar");
+    expect(body.data.columnMap.transactions).toBe("Trans");
     // Fields not in resolvedMappings must be untouched
     expect(body.data.columnMap.date).toBe("transaction_date");
     expect(body.data.columnMap.quantity).toBe("transaction_qty");
